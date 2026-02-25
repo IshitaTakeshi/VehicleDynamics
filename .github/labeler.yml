@@ -1,0 +1,25 @@
+# Managed by CodingGuideline (version: 052ca3ce39f5cc0ef9a59996220e9506b81b4819)
+# Do not edit manually - changes may be overwritten
+# To update: run setup.sh update
+feature:
+  - head-branch: ['^feature/']
+fix:
+  - head-branch: ['^fix/']
+documentation:
+  - head-branch: ['^documentation/']
+refactor:
+  - head-branch: ['^refactor/']
+performance:
+  - head-branch: ['^performance/']
+test:
+  - head-branch: ['^test/']
+ci:
+  - head-branch: ['^ci/']
+build:
+  - head-branch: ['^build/']
+chore:
+  - head-branch: ['^chore/']
+revert:
+  - head-branch: ['^revert/']
+style:
+  - head-branch: ['^style/']

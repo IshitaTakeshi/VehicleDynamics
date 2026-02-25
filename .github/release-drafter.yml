@@ -1,0 +1,46 @@
+# Managed by CodingGuideline (version: 052ca3ce39f5cc0ef9a59996220e9506b81b4819)
+# Do not edit manually - changes may be overwritten
+# To update: run setup.sh update
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+  - title: '⚡️ Performance Improvements'
+    labels:
+      - 'performance'
+  - title: '⏪ Reverts'
+    labels:
+      - 'revert'
+  - title: '♻️ Refactoring'
+    labels:
+      - 'refactor'
+  - title: '📝 Documentation'
+    labels:
+      - 'documentation'
+  - title: '🔧 Maintenance'
+    labels:
+      - 'chore'
+      - 'ci'
+      - 'test'
+      - 'build'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'feature'
+  patch:
+    labels:
+      - 'fix'
+      - 'performance'
+      - 'revert'
+  default: patch
+template: |
+  ## Changes
+  $CHANGES
