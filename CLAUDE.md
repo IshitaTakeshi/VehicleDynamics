@@ -14,7 +14,7 @@ See `.coding-guideline/CONTRIBUTING.md` for the coding and git guidelines.
 <!-- Uncomment the guidelines that apply to your project -->
 
 <!-- Python -->
-<!-- See `.coding-guideline/PYTHON.md` for Python coding standards. -->
+See `.coding-guideline/PYTHON.md` for Python coding standards.
 
 ## Project-Specific Guidelines
 
