@@ -1,4 +1,4 @@
-"""Physical parameters and plot styles for the quarter-car model variants.
+"""Physical parameters for the quarter-car suspension model.
 
 Defines two suspension configurations — soft/comfort and stiff/sport —
 along with shared simulation constants.
@@ -26,48 +26,20 @@ class SuspensionParameters(TypedDict):
     kt: float
 
 
-class PlotStyle(TypedDict):
-    """Matplotlib visual style for a parameter set's plotted lines.
-
-    :param color: Line color string accepted by matplotlib.
-    :param linestyle: Line style string accepted by matplotlib.
-    """
-
-    color: str
-    linestyle: str
-
-
-class ParameterSet(TypedDict):
-    """Combined suspension parameters and associated plot style.
-
-    :param suspension: Physical model parameters.
-    :param style: Visual plot style for this configuration.
-    """
-
-    suspension: SuspensionParameters
-    style: PlotStyle
-
-
-PARAMETER_SETS: dict[str, ParameterSet] = {
+SUSPENSION_PARAMETERS: dict[str, SuspensionParameters] = {
     "Set A (Soft/Comfort)": {
-        "suspension": {
-            "m2": 300.0,
-            "m1": 40.0,
-            "ks": 15000.0,
-            "cs": 1000.0,
-            "kt": 150000.0,
-        },
-        "style": {"color": "steelblue", "linestyle": "-"},
+        "m2": 300.0,
+        "m1": 40.0,
+        "ks": 15000.0,
+        "cs": 1000.0,
+        "kt": 150000.0,
     },
     "Set B (Stiff/Sport)": {
-        "suspension": {
-            "m2": 300.0,
-            "m1": 40.0,
-            "ks": 30000.0,
-            "cs": 3000.0,
-            "kt": 150000.0,
-        },
-        "style": {"color": "tomato", "linestyle": "--"},
+        "m2": 300.0,
+        "m1": 40.0,
+        "ks": 30000.0,
+        "cs": 3000.0,
+        "kt": 150000.0,
     },
 }
 

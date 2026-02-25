@@ -10,13 +10,13 @@ Run with::
 
 from __future__ import annotations
 
-from parameters import PARAMETER_SETS
+from parameters import SUSPENSION_PARAMETERS
 from plot import plot_results
 from simulation import SimulationResult, run_simulation
 
 if __name__ == "__main__":
     results: dict[str, SimulationResult] = {
-        label: run_simulation(parameter_set["suspension"])
-        for label, parameter_set in PARAMETER_SETS.items()
+        label: run_simulation(suspension_parameters)
+        for label, suspension_parameters in SUSPENSION_PARAMETERS.items()
     }
     plot_results(results)

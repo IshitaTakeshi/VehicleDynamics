@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 
-from parameters import BUMP_ONSET, PARAMETER_SETS
+from parameters import BUMP_ONSET
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -17,47 +17,40 @@ if TYPE_CHECKING:
 
     from simulation import SimulationResult
 
+_LINE_COLORS: dict[str, str] = {
+    "Set A (Soft/Comfort)": "steelblue",
+    "Set B (Stiff/Sport)": "tomato",
+}
 
-class SubplotConfig(TypedDict):
-    """Configuration for one subplot in the results figure.
+_LINE_STYLES: dict[str, str] = {
+    "Set A (Soft/Comfort)": "-",
+    "Set B (Stiff/Sport)": "--",
+}
 
-    :param accessor: Extracts the relevant signal array from a SimulationResult.
-    :param ylabel: Y-axis label string.
-    :param title: Subplot title string.
-    """
-
-    accessor: Callable[[SimulationResult], NDArray[np.float64]]
-    ylabel: str
-    title: str
-
-
-SUBPLOT_CONFIGS: list[SubplotConfig] = [
-    {
-        "accessor": lambda result: result.sprung_mass_acceleration,
-        "ylabel": "Acceleration (m/s\u00b2)",
-        "title": "Sprung Mass Acceleration  [Ride Comfort]",
-    },
-    {
-        "accessor": lambda result: result.suspension_stroke,
-        "ylabel": "Deflection (m)",
-        "title": "Suspension Stroke  z\u2082 \u2212 z\u2081  [Working Space]",
-    },
-    {
-        "accessor": lambda result: result.tire_deflection,
-        "ylabel": "Deflection (m)",
-        "title": "Dynamic Tire Deflection  z\u2081 \u2212 z\u2080  [Road Holding]",
-    },
+_SUBPLOT_SPECS: list[
+    tuple[Callable[[SimulationResult], NDArray[np.float64]], str, str]
+] = [
+    (
+        lambda result: result.sprung_mass_acceleration,
+        "Acceleration (m/s\u00b2)",
+        "Sprung Mass Acceleration  [Ride Comfort]",
+    ),
+    (
+        lambda result: result.suspension_stroke,
+        "Deflection (m)",
+        "Suspension Stroke  z\u2082 \u2212 z\u2081  [Working Space]",
+    ),
+    (
+        lambda result: result.tire_deflection,
+        "Deflection (m)",
+        "Dynamic Tire Deflection  z\u2081 \u2212 z\u2080  [Road Holding]",
+    ),
 ]
 
 
-def _decorate_axis(axis: Axes, configuration: SubplotConfig) -> None:
-    """Apply labels, reference lines, legend, and grid to a subplot axis.
-
-    :param axis: The matplotlib Axes object to decorate.
-    :param configuration: Subplot configuration providing label and title strings.
-    """
-    axis.set_ylabel(configuration["ylabel"])
-    axis.set_title(configuration["title"], fontsize=10)
+def _decorate_axis(axis: Axes, ylabel: str, title: str) -> None:
+    axis.set_ylabel(ylabel)
+    axis.set_title(title, fontsize=10)
     axis.axvline(
         BUMP_ONSET, color="gray", linestyle=":", linewidth=1, label="Bump onset"
     )
@@ -66,28 +59,32 @@ def _decorate_axis(axis: Axes, configuration: SubplotConfig) -> None:
     axis.grid(linestyle="--", alpha=0.5)
 
 
+def _plot_series(
+    axis: Axes,
+    label: str,
+    accessor: Callable[[SimulationResult], NDArray[np.float64]],
+    result: SimulationResult,
+) -> None:
+    axis.plot(
+        result.time,
+        accessor(result),
+        label=label,
+        color=_LINE_COLORS[label],
+        linestyle=_LINE_STYLES[label],
+        linewidth=1.8,
+    )
+
+
 def _configure_subplot(
     axis: Axes,
-    configuration: SubplotConfig,
+    accessor: Callable[[SimulationResult], NDArray[np.float64]],
+    ylabel: str,
+    title: str,
     results: dict[str, SimulationResult],
 ) -> None:
-    """Plot all parameter sets onto a single subplot axis.
-
-    :param axis: The matplotlib Axes object to draw on.
-    :param configuration: Subplot configuration including the signal accessor.
-    :param results: Mapping of parameter set label to its simulation result.
-    """
     for label, result in results.items():
-        plot_style = PARAMETER_SETS[label]["style"]
-        axis.plot(
-            result.time,
-            configuration["accessor"](result),
-            label=label,
-            color=plot_style["color"],
-            linestyle=plot_style["linestyle"],
-            linewidth=1.8,
-        )
-    _decorate_axis(axis, configuration)
+        _plot_series(axis, label, accessor, result)
+    _decorate_axis(axis, ylabel, title)
 
 
 def plot_results(results: dict[str, SimulationResult]) -> None:
@@ -99,8 +96,8 @@ def plot_results(results: dict[str, SimulationResult]) -> None:
     """
     figure, axes = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
     figure.suptitle("Quarter-Car Suspension: Transient Step Response", fontsize=14)
-    for axis, configuration in zip(axes, SUBPLOT_CONFIGS, strict=True):
-        _configure_subplot(axis, configuration, results)
+    for axis, (accessor, ylabel, title) in zip(axes, _SUBPLOT_SPECS, strict=True):
+        _configure_subplot(axis, accessor, ylabel, title, results)
     axes[-1].set_xlabel("Time (s)")
     plt.tight_layout()
     plt.savefig("quarter_car_response.png", dpi=150)
